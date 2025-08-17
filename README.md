@@ -228,4 +228,3 @@ This research contributes to several key conversations in AI:
 
 ---
 
-*Building the reasoning foundations for practical AGI - one sparse circuit at a time.*
