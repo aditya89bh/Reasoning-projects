@@ -116,27 +116,23 @@ Together, they form a **sparse, memory-centric reasoning stack**.
 ---
 
 ## Repository Structure
-
-''''
+```text
 Reasoning-Systems/
 ├── projects/
-│ ├── 01-sparse-logical-reasoning/
-│ ├── 02-memory-backed-concepts/
-│ ├── 03-visual-symbolic-state/
-│ └── 04-rule-induction/
-│
+│   ├── 01-sparse-logical-reasoning/
+│   ├── 02-memory-backed-concepts/
+│   ├── 03-visual-symbolic-state/
+│   └── 04-rule-induction/
 ├── shared/
-│ ├── sparse-utils/
-│ ├── memory-systems/
-│ └── evaluation/
-│
+│   ├── sparse-utils/
+│   ├── memory-systems/
+│   └── evaluation/
 ├── benchmarks/
-│
 ├── docs/
-│ ├── roadmap.md
-│ └── design-notes.md
-│
+│   ├── roadmap.md
+│   └── design-notes.md
 └── README.md
+
 
 
 ---
