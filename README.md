@@ -1,183 +1,119 @@
-# Reasoning Systems for AGI
+# 🧠 Reasoning Systems for AGI  
+**Sparse, memory-backed neuro-symbolic reasoning systems designed for real-world deployment**
 
-*Building sparse, memory-augmented symbolic reasoning architectures for practical artificial intelligence.*
+## Short Description
+This repository explores how **reasoning systems for AGI** can be built under real-world constraints like sparsity, limited data, memory, and real-time execution.  
 
-## Research Vision
+Instead of treating symbolic reasoning as a purely academic exercise, this work focuses on **practical, deployable reasoning architectures** suitable for robotics and embodied AI.
 
-**Core Hypothesis**: Symbolic reasoning can be made computationally efficient through sparse neural architectures and external memory systems, enabling real-world deployment in robotics and embodied AI.
+The core belief is simple:
 
-This repository explores the intersection of **sparse computation**, **symbolic reasoning**, and **practical AI systems** - moving beyond academic demonstrations toward reasoning systems that could actually work in production robotics environments.
-
----
-
-## Foundational Work
-
-This research builds on validated sparse and memory-augmented architectures:
-
-- **Sparse Evolutionary Training**: 98.33% accuracy with 5% active connections
-- **Lottery Ticket Hypothesis**: 64.8% accuracy at 49% sparsity (110% of dense performance)  
-- **Differentiable Neural Computer**: 100% memory utilization for algorithmic reasoning
-- **Memory-Augmented Transformers**: 33.3% accuracy from just 6 examples
-- **Expert Choice MoE**: Perfect load balancing across specialized modules
-
-**Key Insight**: If perception and memory can be made sparse while improving performance, symbolic reasoning should follow the same principles.
+> If perception and memory can be sparse and efficient without losing performance,  
+> reasoning systems should follow the same principle.
 
 ---
 
-## Core Research Projects
+## Why This Repository Exists
 
-### **Project 1: Sparse Logical Neural Networks**
-**Goal**: Discover minimal logical reasoning circuits within LNN architectures
+Most modern AI systems excel at perception and pattern matching but fail at:
+- multi-step reasoning
+- abstraction and generalization
+- learning explicit rules
+- operating under tight compute and latency constraints
 
-**Innovation**: Apply lottery ticket methodology to find sparse "reasoning tickets"
-- Start with dense LNN implementation
-- Use iterative magnitude pruning on logical operations
-- Add fuzzy bounds for uncertainty handling
-- Integrate with MoE for different logical operation types
+Symbolic reasoning promises these abilities, but traditional symbolic systems:
+- do not scale
+- are brittle
+- are disconnected from perception
+- are rarely deployable on real machines
 
-**Expected Breakthrough**: <5% of parameters needed for complex logical inference
-
-**Applications**: Robot task planning, safety verification, knowledge reasoning
-
----
-
-### **Project 2: Memory-Augmented Neuro-Symbolic Concept Learner**
-**Goal**: Visual concept learning with compositional reasoning using external memory
-
-**Innovation**: Replace NSCL's internal concept storage with proven memory architectures
-- **Visual Perception**: Sparse ViT for efficient scene understanding
-- **Concept Storage**: Memory-augmented transformers for few-shot concept learning
-- **Symbolic Reasoning**: Differentiable operations over stored concepts
-- **Compositional Learning**: Build complex concepts from simple primitives
-
-**Expected Result**: Few-shot visual concept learning with sparse attention mechanisms
-
-**Applications**: Robot scene understanding, visual question answering, concept discovery
+This repository explores a **third path**:
+**Sparse, memory-augmented neuro-symbolic reasoning systems** that can actually work in production environments like robotics.
 
 ---
 
-### **Project 3: Visual-Symbolic Planning Pipeline**
-**Goal**: End-to-end system from pixel observations to symbolic action plans
+## Core Design Principles
 
-**Innovation**: Robotics-ready planning with sparse visual processing
-- **Scene Understanding**: Sparse CNN/ViT for object detection and state extraction
-- **State Representation**: Bridge visual features to symbolic predicates
-- **Symbolic Planning**: Classical planner (STRIPS/PDDL) or learned planning
-- **Action Execution**: Closed-loop plan execution with visual feedback
+All projects in this repository follow the same principles:
 
-**Expected Result**: Real-time visual planning with sparse computation suitable for robotics
-
-**Applications**: Robotic manipulation, autonomous navigation, task planning
+- **Sparsity-first**: Reasoning systems should activate only what they need
+- **Memory over parameters**: Knowledge should live in memory, not weights
+- **Explicit structure**: Reasoning steps should be inspectable
+- **Few-shot learning**: Systems must learn from limited examples
+- **Deployment realism**: Real-time performance matters
 
 ---
 
-### **Project 4: Differentiable Inductive Logic Programming**
-**Goal**: Learn logical programs from examples using gradient-based optimization
+## Project Overview
 
-**Innovation**: Combine neural networks with logic programming for rule discovery
-- **Rule Learning**: Gradient-based optimization of logical rule structures
-- **Memory Integration**: Store learned rules in external memory systems
-- **Sparse Computation**: Apply sparsity principles to rule evaluation
-- **Few-Shot Generalization**: Learn logical programs from minimal examples
+This repository is organized as a sequence of **reasoning capabilities**, not isolated experiments.
 
-**Expected Result**: Rapid logical program synthesis with sparse neural computation
+Each project builds a distinct component of a unified reasoning stack.
 
-**Applications**: Automated reasoning, knowledge discovery, robot behavior learning
+### Project 01: Sparse Logical Reasoning Circuits
+**Goal:** Discover minimal neural circuits capable of logical reasoning.
 
----
+- Start with dense logical neural networks
+- Apply lottery-ticket-style pruning to logic operators
+- Identify sparse “reasoning circuits”
+- Measure performance vs sparsity tradeoffs
 
-## Research Methodology
-
-### **Sparse-First Approach**
-Every reasoning system is designed with sparsity as a first-class constraint, not an afterthought:
-1. **Sparse Initialization**: Start with lottery ticket principles
-2. **Dynamic Sparsity**: Allow reasoning circuits to evolve during training
-3. **Memory Efficiency**: Use external memory to avoid parameter bloat
-4. **Modular Specialization**: MoE routing for different reasoning types
-
-### **Robotics Validation**
-Unlike purely academic research, every system is evaluated for practical deployment:
-- **Real-time Performance**: Can it run on robot hardware?
-- **Sample Efficiency**: Can it learn from limited robot experience?
-- **Robustness**: Does it work with noisy real-world data?
-- **Interpretability**: Can humans understand the reasoning process?
-
-### **Incremental Integration**
-Projects build upon each other toward a unified reasoning architecture:
-- **Phase 1**: Individual reasoning capabilities (Projects 1-4)
-- **Phase 2**: Pairwise integration (visual + symbolic, memory + logic)
-- **Phase 3**: Unified sparse reasoning system
-- **Phase 4**: Robotics deployment and validation
+**Key Question:**  
+What is the smallest neural structure that can still reason correctly?
 
 ---
 
-## Success Metrics
+### Project 02: Memory-Backed Concept Reasoning
+**Goal:** Learn and reason about concepts using external memory instead of parameters.
 
-### **Technical Benchmarks**
-- **Sparsity**: Achieve reasoning with <10% of dense parameters
-- **Speed**: Real-time performance suitable for robotics (>10 Hz)
-- **Sample Efficiency**: Learn from <100 examples per concept/rule
-- **Accuracy**: Match or exceed dense baselines on reasoning tasks
+- Sparse visual or structured encoders
+- External memory for concept storage
+- Symbolic operations over retrieved concepts
+- Few-shot concept learning and composition
 
-### **Practical Validation**
-- **Robotics Integration**: Deploy in real robotic systems
-- **Scalability**: Handle complex multi-step reasoning chains
-- **Interpretability**: Generate human-readable reasoning traces
-- **Generalization**: Transfer across different domains and tasks
+**Key Question:**  
+Can concepts be learned and reused without retraining the network?
 
 ---
 
-## Getting Started
+### Project 03: Visual-to-Symbolic State Extraction
+**Goal:** Convert raw perceptual input into clean symbolic world states.
 
-### **Quick Start**
-```bash
-git clone https://github.com/aditya89bh/Reasoning-projects.git
-cd Reasoning-projects
+- Sparse perception modules
+- Visual → symbolic predicate mapping
+- Uncertainty-aware state extraction
+- Real-time performance suitable for robotics
 
-# Start with any project
-cd projects/01-sparse-logical-networks/
-# Follow project-specific README
-```
-
-### **Project Structure**
-```
-Reasoning-projects/
-├── projects/                   # Core reasoning implementations
-│   ├── 01-sparse-logical-networks/
-│   ├── 02-memory-augmented-nscl/
-│   ├── 03-visual-symbolic-planner/
-│   └── 04-differentiable-ilp/
-├── shared/                     # Common utilities
-│   ├── sparse-utils/          # Sparsity implementations
-│   ├── memory-systems/        # External memory architectures
-│   └── evaluation/            # Benchmark and evaluation tools
-├── docs/                      # Research documentation
-└── benchmarks/                # Reasoning task evaluations
-```
-
-### **Dependencies**
-- PyTorch/JAX for neural components
-- ProbLog/PyKE for logic programming
-- Fast Downward/PDDL for planning
-- Custom sparse computation libraries
-
+**Key Question:**  
+Can perception reliably produce symbolic states for downstream reasoning?
 
 ---
 
-## Key References
+### Project 04: Memory-Augmented Rule Induction
+**Goal:** Learn explicit logical rules from examples.
 
-**Sparse Computation**:
-- Lottery Ticket Hypothesis: Frankle & Carbin (2019)
-- Sparse Evolutionary Training: Mocanu et al. (2018)
+- Differentiable rule learning
+- External memory for storing discovered rules
+- Sparse rule evaluation
+- Human-readable rule extraction
 
-**Symbolic Reasoning**:
-- Neuro-Symbolic Concept Learner: Mao et al. (2019)
-- Logical Neural Networks: Riegel et al. (2020)
-- Differentiable ILP: Evans & Grefenstette (2018)
-
-**Memory Systems**:
-- Differentiable Neural Computers: Graves et al. (2016)
-- Memory-Augmented Neural Networks: Santoro et al. (2016)
+**Key Question:**  
+Can systems learn rules instead of policies?
 
 ---
+
+## How the Projects Fit Together
+
+These projects are designed as **layers**, not silos:
+
+1. Sparse logical circuits enable efficient reasoning  
+2. Memory-backed concepts allow abstraction and reuse  
+3. Symbolic state extraction grounds reasoning in perception  
+4. Rule induction enables learning from experience  
+
+Together, they form a **sparse, memory-centric reasoning stack**.
+
+---
+
+## Repository Structure
 
