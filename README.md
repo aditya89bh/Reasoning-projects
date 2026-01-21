@@ -117,3 +117,70 @@ Together, they form a **sparse, memory-centric reasoning stack**.
 
 ## Repository Structure
 
+''''
+Reasoning-Systems/
+├── projects/
+│ ├── 01-sparse-logical-reasoning/
+│ ├── 02-memory-backed-concepts/
+│ ├── 03-visual-symbolic-state/
+│ └── 04-rule-induction/
+│
+├── shared/
+│ ├── sparse-utils/
+│ ├── memory-systems/
+│ └── evaluation/
+│
+├── benchmarks/
+│
+├── docs/
+│ ├── roadmap.md
+│ └── design-notes.md
+│
+└── README.md
+
+
+---
+
+## Success Metrics
+
+Each project is evaluated using both **technical** and **practical** criteria.
+
+### Technical
+- <10% active parameters vs dense baselines
+- Comparable or better reasoning accuracy
+- Few-shot learning (<100 examples)
+- Stable training dynamics
+
+### Practical
+- Real-time performance (>10 Hz where applicable)
+- Interpretability of reasoning steps
+- Compatibility with robotics pipelines
+- Modular integration across projects
+
+---
+
+## Current Status
+
+This repository is under **active development**.
+
+Initial focus:
+- Fully implementing Project 01
+- Scaffolding Project 02
+- Designing clean interfaces between components
+
+---
+
+## Who This Is For
+
+- Researchers exploring neuro-symbolic AI
+- Robotics engineers interested in reasoning systems
+- AGI builders focused on memory and abstraction
+- Practitioners who care about deployment, not demos
+
+---
+
+## Next Steps
+
+Start with:
+
+
