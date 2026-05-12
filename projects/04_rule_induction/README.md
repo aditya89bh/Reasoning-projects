@@ -2,12 +2,38 @@
 
 This project explores how reasoning systems can learn explicit rules from examples, feedback, or repeated experience.
 
-The goal is to move beyond fixed hand-written rules and build a small system that can propose, score, store, and reuse human-readable rules.
+The current prototype implements a small experience-to-rule loop. It loads structured episodes, detects repeated patterns, generates candidate rules, scores them, stores them in rule memory, and applies accepted rules to future task facts.
 
 ## Core question
 
 ```text
 Can the system learn rules instead of only learning policies?
+```
+
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- episode data model
+- induced rule data model
+- pattern detector
+- candidate rule generator
+- rule scorer
+- rule memory store
+- rule applier
+- example episodes
+- command-line demo
+- tests
+- rule induction result documentation
+
+Estimated project status:
+
+```text
+65-70% complete
 ```
 
 ## Why this matters
@@ -26,61 +52,37 @@ If these patterns stay hidden inside logs or model weights, they are hard to ins
 
 Rule induction makes experience operational.
 
-## Project goal
-
-Build a minimal rule induction system that can:
-
-1. Receive examples or episodes.
-2. Detect repeated patterns.
-3. Generate candidate rules.
-4. Score candidate rules.
-5. Store useful rules in memory.
-6. Reuse learned rules in future reasoning.
-7. Produce a trace explaining where a rule came from.
-
-## Example induced rules
+## Architecture
 
 ```text
-If object is fragile and grip force is high, then action is unsafe.
+Episodes → Pattern Detection → Candidate Rule Generation → Rule Scoring → Rule Memory → Future Task Application
 ```
 
-```text
-If path is blocked, then select alternate approach direction.
-```
-
-```text
-If the same failure occurs twice for a part family, then lower confidence in the current strategy.
-```
-
-```text
-If an operator correction is repeated, then store it as a process preference.
-```
-
-## Minimal architecture
-
-```text
-Episodes → Pattern Detection → Candidate Rule Generation → Rule Scoring → Rule Memory → Future Use → Evaluation
-```
+The first prototype uses deterministic pattern detection and templated rule generation. This keeps the rule-learning loop inspectable before adding probabilistic, causal, or neural rule learning.
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| Episode store | Holds examples, successes, failures, and corrections |
-| Pattern detector | Finds repeated conditions and outcomes |
-| Rule generator | Converts patterns into candidate rules |
-| Rule scorer | Scores usefulness, confidence, and coverage |
-| Rule memory | Stores accepted rules |
-| Rule applier | Uses learned rules in future reasoning |
-| Trace generator | Explains the origin and use of a rule |
+| `src/episode.py` | Defines structured task episodes |
+| `src/rule.py` | Defines induced rule objects |
+| `src/pattern_detector.py` | Finds repeated fact/action/outcome patterns |
+| `src/rule_generator.py` | Converts patterns into candidate rules |
+| `src/rule_scorer.py` | Scores candidate rules using coverage, precision, and confidence |
+| `src/rule_memory.py` | Stores candidate and accepted rules |
+| `src/rule_applier.py` | Applies induced rules to future task facts |
+| `examples/episodes.json` | Seed episodes used for induction |
+| `run_demo.py` | Runs the full induction and application loop |
+| `tests/test_rule_induction.py` | Regression tests for rule induction behavior |
+| `results/rule_induction_examples.md` | Documents expected rule induction behavior |
 
 ## Episode schema
 
-A minimal episode should include:
+A minimal episode includes:
 
 ```text
 episode_id
-state
+facts
 action
 outcome
 feedback
@@ -92,33 +94,27 @@ Example:
 
 ```text
 episode_id: ep_001
-state:
-  object: glass_cup
-  material: glass
-  grip_force: high
-action:
-  pick_object
-outcome:
-  failure
-feedback:
-  object slipped and cracked
-constraints:
-  fragile object
-notes:
-  high force was unsafe
+facts: object_fragile, grip_force_high
+action: high_force_grasp
+outcome: failure
+feedback: Fragile object slipped and cracked under high force.
+constraints: fragile_object
+notes: High force was unsafe for fragile object.
 ```
 
-## Candidate rule format
+## Rule format
 
-A candidate rule should include:
+An induced rule includes:
 
 ```text
 rule_id
-condition
-action_or_inference
+name
+conditions
+effect
 source_episodes
 confidence
 coverage
+precision
 failure_cases
 status
 ```
@@ -126,165 +122,142 @@ status
 Example:
 
 ```text
-rule_id: rule_fragile_low_force
-condition: object.material == glass OR object.tag == fragile
-action_or_inference: reduce_grip_force
-source_episodes: ep_001, ep_004, ep_009
-confidence: 0.78
-coverage: 3/4
-failure_cases: ep_006
-status: candidate
+rule_id: rule_000_object_fragile_avoid_high_force_grasp
+name: If object_fragile then avoid_high_force_grasp
+conditions:
+  - object_fragile
+effect: avoid_high_force_grasp
+source_episodes:
+  - ep_001
+  - ep_002
+confidence: <computed>
+coverage: <computed>
+precision: <computed>
+status: candidate or accepted
 ```
 
 ## Rule scoring
 
-Rules should not be accepted only because they appear once.
-
-Useful scoring dimensions:
+Candidate rules are scored with:
 
 | Score | Meaning |
 |---|---|
-| Confidence | How reliable is the rule? |
-| Coverage | How many examples does it explain? |
-| Specificity | Is the rule too broad or too narrow? |
-| Utility | Does it improve future decisions? |
-| Conflict | Does it contradict existing rules? |
-| Recency | Is the rule based on recent relevant experience? |
+| Coverage | How many episodes match the rule condition? |
+| Precision | How often the rule effect matches observed outcomes? |
+| Confidence | Combined score from precision, coverage, and evidence count |
+| Failure cases | Episodes where the condition matched but the effect did not explain the outcome |
+| Status | `candidate` or `accepted` |
 
-## Rule lifecycle
+A rule becomes accepted when confidence and precision cross the prototype thresholds.
 
-A learned rule should move through stages.
+## Demo behavior
 
-```text
-candidate → accepted → active → revised → deprecated
+The demo performs this loop:
+
+1. Load episodes from `examples/episodes.json`.
+2. Detect repeated fact/action/outcome patterns.
+3. Generate candidate rules from patterns.
+4. Score candidate rules.
+5. Store rules in rule memory.
+6. Apply accepted rules to future tasks.
+7. Print rule traces and recommendation summary.
+
+## Future task examples
+
+| Future task | Facts | Expected recommendation |
+|---|---|---|
+| `future_fragile_high_force` | `object_fragile`, `grip_force_high` | `avoid_high_force_grasp` |
+| `future_blocked_path` | `path_blocked`, `target_visible` | `avoid_direct_path_plan` |
+| `future_operator_review` | `operator_prefers_review`, `task_sensitive` | `prefer_manual_review` |
+| `future_no_match` | `object_standard`, `path_clear` | `no_rule_recommendation` |
+
+## Run the demo
+
+From the repository root:
+
+```bash
+python projects/04_rule_induction/run_demo.py
 ```
 
-| Stage | Meaning |
-|---|---|
-| Candidate | Proposed from examples, not trusted yet |
-| Accepted | Good enough to store and inspect |
-| Active | Used during reasoning |
-| Revised | Modified after new evidence |
-| Deprecated | Retained for history but no longer used |
+The demo prints:
 
-## Reasoning trace
+- loaded episode count
+- detected patterns
+- scored candidate rules
+- accepted/candidate rule counts
+- future task recommendations
+- application traces
+- aggregate recommendation accuracy
 
-The system should explain both rule creation and rule use.
+## Run tests
 
-Example creation trace:
+From the repository root:
 
-```text
-Episodes analyzed: ep_001, ep_004, ep_009
-Repeated pattern: fragile material + high grip force → failure
-Generated rule: reduce grip force for fragile objects
-Confidence: 0.78
-Status: candidate
+```bash
+python -m pytest projects/04_rule_induction/tests
 ```
 
-Example use trace:
+## Example trace
 
 ```text
-Task: pick glass_cup_12
-Matched rule: rule_fragile_low_force
-Reasoning effect: reduce grip force
-Action selected: low-force grasp
-Evaluation: success
-Rule confidence updated: 0.81
+Task: future_fragile_high_force
+Facts: object_fragile, grip_force_high
+Matched rule_...: conditions [object_fragile] -> effect [avoid_high_force_grasp], confidence=<score>
+Effects: avoid_high_force_grasp
+Recommendation: avoid_high_force_grasp
 ```
 
 ## Evaluation metrics
 
 | Metric | Meaning |
 |---|---|
-| Rule correctness | Does the rule match real outcomes? |
-| Coverage | How many cases does the rule explain? |
-| Precision | How often is the rule useful when activated? |
-| Generalization | Does the rule work on unseen but related cases? |
-| Conflict rate | Does the rule contradict other rules? |
-| Trace clarity | Can a human inspect where the rule came from? |
-| Decision impact | Did the learned rule improve future behavior? |
+| Pattern detection | Were repeated patterns detected correctly? |
+| Rule generation | Were candidate rules created from patterns? |
+| Rule scoring | Were rules scored with coverage and precision? |
+| Rule memory | Were rules stored and retrievable? |
+| Future application | Did induced rules influence future recommendations? |
+| Trace clarity | Can rule origin and use be inspected? |
 
-## Minimum viable demo
+## What this prototype proves
 
-The first demo should use structured example episodes and induce one or more simple rules.
+This project does not claim full rule learning yet.
 
-Example target behavior:
-
-```text
-Input episodes:
-3 failures with glass objects and high grip force
-1 success with glass object and low grip force
-
-Generated candidate rule:
-if material == glass then reduce_grip_force
-
-Score:
-confidence=0.75
-coverage=4 episodes
-status=candidate
-
-Future task:
-pick new glass object
-
-Applied rule:
-reduce_grip_force
-
-Evaluation:
-success=true
-confidence updated
-```
-
-## Planned file structure
+It proves the smaller operational loop:
 
 ```text
-projects/04_rule_induction/
-├── README.md
-├── src/
-│   ├── episode.py
-│   ├── pattern_detector.py
-│   ├── rule_generator.py
-│   ├── rule_scorer.py
-│   ├── rule_memory.py
-│   └── rule_applier.py
-├── examples/
-│   ├── episodes.json
-│   └── induced_rules.json
-├── tests/
-│   └── test_rule_induction.py
-└── results/
-    └── rule_induction_examples.md
+repeated episodes → explicit rule → scored rule → stored rule → future recommendation
 ```
 
-## Current status
+That loop is the learning layer of the reasoning stack.
 
-```text
-Design phase
-```
+## Current limitations
 
-This project does not yet have the runnable implementation. The immediate goal is to define the episode schema, candidate rule format, scoring logic, and rule lifecycle.
+- Pattern detection is simple fact/action/outcome grouping.
+- Rule generation uses deterministic templates.
+- No natural language rule explanation yet.
+- No conflict resolution between induced rules yet.
+- No persistent `induced_rules.json` output yet.
+- No integration with Project 01 or Project 02 yet.
+- No probabilistic or causal rule learning yet.
 
 ## Next steps
 
-1. Define the episode schema.
-2. Create example episodes.
-3. Implement pattern detection.
-4. Generate candidate rules.
-5. Score candidate rules.
-6. Store accepted rules.
-7. Apply rules to future tasks.
-8. Add trace generation.
-9. Add tests and rule examples.
+1. Persist generated rules to `examples/induced_rules.json`.
+2. Add conflict handling between induced rules.
+3. Add richer multi-condition rule generation.
+4. Capture actual demo output in results.
+5. Connect induced rules to Project 01 sparse rule selection.
+6. Connect repeated failures to Project 02 concept memory.
+7. Add natural-language summaries for induced rules.
 
 ## Completion target
 
-This project reaches a useful first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- structured episode examples
-- candidate rule generation
-- rule scoring
-- rule memory
-- future task application
-- trace output
-- basic tests
+- persistent induced rule output
+- multi-condition rules
+- conflict resolution
+- actual demo output captured in results
+- integration with sparse reasoning and concept memory
 
-At that point, Project 04 becomes the learning layer of the reasoning stack.
+At that point, Project 04 becomes a more serious learning layer for the repository.
