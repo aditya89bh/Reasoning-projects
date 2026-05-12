@@ -1,0 +1,130 @@
+[
+  {
+    "episode_id": "ep_001",
+    "facts": [
+      "object_fragile",
+      "grip_force_high"
+    ],
+    "action": "high_force_grasp",
+    "outcome": "failure",
+    "feedback": "Fragile object slipped and cracked under high force.",
+    "constraints": [
+      "fragile_object"
+    ],
+    "notes": "High force was unsafe for fragile object."
+  },
+  {
+    "episode_id": "ep_002",
+    "facts": [
+      "object_fragile",
+      "material_glass",
+      "grip_force_high"
+    ],
+    "action": "high_force_grasp",
+    "outcome": "failure",
+    "feedback": "Glass object was damaged during grasp.",
+    "constraints": [
+      "fragile_object"
+    ],
+    "notes": "Repeated high-force failure."
+  },
+  {
+    "episode_id": "ep_003",
+    "facts": [
+      "object_fragile",
+      "grip_force_low"
+    ],
+    "action": "low_force_grasp",
+    "outcome": "success",
+    "feedback": "Fragile object was picked safely.",
+    "constraints": [
+      "fragile_object"
+    ],
+    "notes": "Low force improved outcome."
+  },
+  {
+    "episode_id": "ep_004",
+    "facts": [
+      "material_glass",
+      "grip_force_low"
+    ],
+    "action": "low_force_grasp",
+    "outcome": "success",
+    "feedback": "Glass object was picked safely.",
+    "constraints": [
+      "fragile_object"
+    ],
+    "notes": "Low force worked for glass object."
+  },
+  {
+    "episode_id": "ep_005",
+    "facts": [
+      "path_blocked",
+      "target_visible"
+    ],
+    "action": "direct_path_plan",
+    "outcome": "failure",
+    "feedback": "Direct path collided with obstacle.",
+    "constraints": [
+      "path_constraint"
+    ],
+    "notes": "Blocked path made direct plan invalid."
+  },
+  {
+    "episode_id": "ep_006",
+    "facts": [
+      "path_blocked",
+      "obstacle_detected"
+    ],
+    "action": "direct_path_plan",
+    "outcome": "failure",
+    "feedback": "Obstacle blocked the direct path.",
+    "constraints": [
+      "path_constraint"
+    ],
+    "notes": "Repeated direct path failure."
+  },
+  {
+    "episode_id": "ep_007",
+    "facts": [
+      "path_blocked",
+      "obstacle_detected"
+    ],
+    "action": "alternate_path_plan",
+    "outcome": "success",
+    "feedback": "Alternate path avoided the obstacle.",
+    "constraints": [
+      "path_constraint"
+    ],
+    "notes": "Alternate path worked under blocked path condition."
+  },
+  {
+    "episode_id": "ep_008",
+    "facts": [
+      "operator_prefers_review",
+      "task_sensitive"
+    ],
+    "action": "manual_review",
+    "outcome": "success",
+    "feedback": "Manual review approved the action.",
+    "constraints": [
+      "operator_preference"
+    ],
+    "notes": "Manual review respected process requirement."
+  },
+  {
+    "episode_id": "ep_009",
+    "facts": [
+      "operator_prefers_review",
+      "object_fragile"
+    ],
+    "action": "manual_review",
+    "outcome": "success",
+    "feedback": "Operator confirmed the safe handling procedure.",
+    "constraints": [
+      "operator_preference",
+      "fragile_object"
+    ],
+    "notes": "Manual review helped under sensitive condition."
+  }
+]
