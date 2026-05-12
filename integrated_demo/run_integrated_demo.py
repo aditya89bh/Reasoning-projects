@@ -28,8 +28,11 @@ PROJECT_02 = REPO_ROOT / "projects" / "02_memory_backed_concepts"
 PROJECT_03 = REPO_ROOT / "projects" / "03_visual_symbolic_state"
 PROJECT_04 = REPO_ROOT / "projects" / "04_rule_induction"
 
+sys.path.insert(0, str(REPO_ROOT))
 for project_path in [PROJECT_01, PROJECT_02, PROJECT_03, PROJECT_04]:
     sys.path.insert(0, str(project_path))
+
+from shared.fact_normalizer import FactNormalizer  # noqa: E402
 
 # Project 03 imports
 from src.scene_loader import SceneLoader  # type: ignore  # noqa: E402
@@ -87,22 +90,12 @@ def load_episodes() -> List[Episode]:
 
 
 def facts_from_symbolic_state(predicates: List[str]) -> List[str]:
-    """Convert symbolic predicates into simplified task facts.
+    """Convert symbolic predicates into simplified task facts."""
 
-    This mapper is intentionally simple. It bridges Project 03 predicate strings
-    to the fact labels expected by Projects 01 and 02.
-    """
-
-    facts = set()
-    for predicate in predicates:
-        if predicate == "material(cup_glass, glass)":
-            facts.add("material_glass")
-        if predicate == "fragile(cup_glass, true)":
-            facts.add("object_fragile")
-
-    # Add a task assumption for the integrated scenario.
-    facts.add("grip_force_high")
-    return sorted(facts)
+    return FactNormalizer().normalize_predicates(
+        predicates,
+        extra_facts=["grip_force_high"],
+    )
 
 
 def build_symbolic_state() -> Dict:
