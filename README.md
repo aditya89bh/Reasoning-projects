@@ -59,8 +59,8 @@ Each project in this repository studies one layer of that stack.
 |---|---|---:|---|
 | 01 Sparse Logical Reasoning | Compare sparse rule activation against a dense baseline | Runnable first prototype | Demo, tests, traces, baseline comparison |
 | 02 Memory-Backed Concepts | Store, retrieve, reuse, and update concepts through external memory | Runnable first prototype | Demo, tests, seed memory, retrieval examples |
-| 03 Visual-to-Symbolic State | Convert perception into structured symbolic states | Design phase | State extraction spec |
-| 04 Rule Induction | Learn explicit rules from examples | Design phase | Rule induction spec |
+| 03 Visual-to-Symbolic State | Convert structured scene input into symbolic predicates | Runnable first prototype | Demo, tests, sample scene, state conversion examples |
+| 04 Rule Induction | Learn explicit rules from repeated examples | Runnable first prototype | Demo, tests, episodes, rule induction examples |
 
 ## Current status
 
@@ -74,14 +74,15 @@ Current state:
 4. Evaluation criteria are documented.
 5. Project 01 has a runnable sparse logical reasoning prototype.
 6. Project 02 has a runnable memory-backed concepts prototype.
-7. Projects 03 and 04 remain design-phase scaffolds.
+7. Project 03 has a runnable visual-to-symbolic state prototype.
+8. Project 04 has a runnable rule induction prototype.
 
-This repo is not yet a finished integrated reasoning system. It is now a working research scaffold with two runnable modules.
+This repo is not yet a finished integrated reasoning system. It is now a working research scaffold with four runnable modules.
 
 Estimated repository status:
 
 ```text
-60-65% complete
+75-80% complete
 ```
 
 ## Repository structure
@@ -112,9 +113,19 @@ Reasoning-projects/
 │   │   ├── tests/
 │   │   └── results/
 │   ├── 03_visual_symbolic_state/
-│   │   └── README.md
+│   │   ├── README.md
+│   │   ├── run_demo.py
+│   │   ├── src/
+│   │   ├── examples/
+│   │   ├── tests/
+│   │   └── results/
 │   └── 04_rule_induction/
-│       └── README.md
+│       ├── README.md
+│       ├── run_demo.py
+│       ├── src/
+│       ├── examples/
+│       ├── tests/
+│       └── results/
 ├── shared/
 │   ├── interfaces.md
 │   └── evaluation.md
@@ -164,6 +175,46 @@ What it demonstrates:
 task facts → concept retrieval → recommendation → outcome update → memory trace
 ```
 
+## Project 03: Visual-to-Symbolic State
+
+Run from the repository root:
+
+```bash
+python projects/03_visual_symbolic_state/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/03_visual_symbolic_state/tests
+```
+
+What it demonstrates:
+
+```text
+structured scene → objects → relations → predicates → symbolic state → validation trace
+```
+
+## Project 04: Rule Induction
+
+Run from the repository root:
+
+```bash
+python projects/04_rule_induction/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/04_rule_induction/tests
+```
+
+What it demonstrates:
+
+```text
+episodes → repeated patterns → candidate rules → scored rules → rule memory → future recommendation
+```
+
 ## How to use this repository
 
 Start with:
@@ -174,8 +225,10 @@ Start with:
 4. `shared/evaluation.md`
 5. `projects/01_sparse_logical_reasoning/README.md`
 6. `projects/02_memory_backed_concepts/README.md`
+7. `projects/03_visual_symbolic_state/README.md`
+8. `projects/04_rule_induction/README.md`
 
-Then run the two working demos.
+Then run the four working demos.
 
 ## Evaluation criteria
 
@@ -205,11 +258,12 @@ This repo connects to broader work on:
 
 Near-term roadmap:
 
-1. Run both working demos locally and capture actual output in result files.
+1. Run all four demos locally and capture actual output in result files.
 2. Add persistent concept memory write-back for Project 02.
-3. Connect Project 02 concept retrieval to Project 01 rule selection.
-4. Start Project 03 runnable prototype for visual-to-symbolic state.
-5. Start Project 04 runnable prototype for rule induction.
-6. Build an integrated loop across symbolic state, concept memory, sparse rules, and evaluation.
+3. Persist induced rules to `examples/induced_rules.json` for Project 04.
+4. Connect Project 03 symbolic predicates to Project 01 sparse rule selection.
+5. Connect Project 03 symbolic attributes to Project 02 concept retrieval.
+6. Connect Project 04 induced rules to Project 01 rule execution.
+7. Build one integrated loop across symbolic state, concept memory, sparse rules, rule induction, and evaluation.
 
 Longer term, the goal is to connect sparse reasoning, memory-backed concepts, symbolic state extraction, and rule induction into a coherent reasoning architecture for embodied agents.
