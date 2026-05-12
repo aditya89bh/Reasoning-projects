@@ -61,10 +61,11 @@ Each project in this repository studies one layer of that stack.
 | 02 Memory-Backed Concepts | Store, retrieve, reuse, and update concepts through external memory | Runnable first prototype | Demo, tests, seed memory, retrieval examples |
 | 03 Visual-to-Symbolic State | Convert structured scene input into symbolic predicates | Runnable first prototype | Demo, tests, sample scene, state conversion examples |
 | 04 Rule Induction | Learn explicit rules from repeated examples | Runnable first prototype | Demo, tests, episodes, rule induction examples |
+| Integrated Demo | Connect state, memory, rules, and learning into one traceable loop | Integration scaffold | Cross-project demo, shared normalizer, integration trace |
 
 ## Current status
 
-This repository has moved from pure architecture into early runnable prototypes.
+This repository has moved from pure architecture into a working reasoning scaffold.
 
 Current state:
 
@@ -76,13 +77,14 @@ Current state:
 6. Project 02 has a runnable memory-backed concepts prototype.
 7. Project 03 has a runnable visual-to-symbolic state prototype.
 8. Project 04 has a runnable rule induction prototype.
+9. The integrated demo connects all four prototypes through a shared fact normalizer.
 
-This repo is not yet a finished integrated reasoning system. It is now a working research scaffold with four runnable modules.
+This repo is not yet a production reasoning system. It is now a coherent research scaffold with four runnable modules and one cross-project integration path.
 
 Estimated repository status:
 
 ```text
-75-80% complete
+85-90% complete
 ```
 
 ## Repository structure
@@ -97,6 +99,11 @@ Reasoning-projects/
 │   ├── design_principles.md
 │   ├── roadmap.md
 │   └── open_questions.md
+├── integrated_demo/
+│   ├── README.md
+│   ├── run_integrated_demo.py
+│   └── results/
+│       └── integrated_trace.md
 ├── projects/
 │   ├── 01_sparse_logical_reasoning/
 │   │   ├── README.md
@@ -127,8 +134,12 @@ Reasoning-projects/
 │       ├── tests/
 │       └── results/
 ├── shared/
+│   ├── fact_normalizer.py
 │   ├── interfaces.md
 │   └── evaluation.md
+├── tests/
+│   ├── test_fact_normalizer.py
+│   └── test_integrated_scaffold.py
 └── references/
     └── reading_list.md
 ```
@@ -137,15 +148,8 @@ Reasoning-projects/
 
 ## Project 01: Sparse Logical Reasoning
 
-Run from the repository root:
-
 ```bash
 python projects/01_sparse_logical_reasoning/run_demo.py
-```
-
-Run tests:
-
-```bash
 python -m pytest projects/01_sparse_logical_reasoning/tests
 ```
 
@@ -157,15 +161,8 @@ input facts → sparse rule selection → execution → answer → trace → eva
 
 ## Project 02: Memory-Backed Concepts
 
-Run from the repository root:
-
 ```bash
 python projects/02_memory_backed_concepts/run_demo.py
-```
-
-Run tests:
-
-```bash
 python -m pytest projects/02_memory_backed_concepts/tests
 ```
 
@@ -177,15 +174,8 @@ task facts → concept retrieval → recommendation → outcome update → memor
 
 ## Project 03: Visual-to-Symbolic State
 
-Run from the repository root:
-
 ```bash
 python projects/03_visual_symbolic_state/run_demo.py
-```
-
-Run tests:
-
-```bash
 python -m pytest projects/03_visual_symbolic_state/tests
 ```
 
@@ -197,15 +187,8 @@ structured scene → objects → relations → predicates → symbolic state →
 
 ## Project 04: Rule Induction
 
-Run from the repository root:
-
 ```bash
 python projects/04_rule_induction/run_demo.py
-```
-
-Run tests:
-
-```bash
 python -m pytest projects/04_rule_induction/tests
 ```
 
@@ -213,6 +196,19 @@ What it demonstrates:
 
 ```text
 episodes → repeated patterns → candidate rules → scored rules → rule memory → future recommendation
+```
+
+## Integrated demo
+
+```bash
+python integrated_demo/run_integrated_demo.py
+python -m pytest tests
+```
+
+What it demonstrates:
+
+```text
+structured scene → symbolic predicates → normalized facts → concept retrieval → sparse rules → induced rule recommendation → final trace
 ```
 
 ## How to use this repository
@@ -223,12 +219,11 @@ Start with:
 2. `docs/design_principles.md`
 3. `shared/interfaces.md`
 4. `shared/evaluation.md`
-5. `projects/01_sparse_logical_reasoning/README.md`
-6. `projects/02_memory_backed_concepts/README.md`
-7. `projects/03_visual_symbolic_state/README.md`
-8. `projects/04_rule_induction/README.md`
+5. `shared/fact_normalizer.py`
+6. `integrated_demo/README.md`
+7. The four project README files
 
-Then run the four working demos.
+Then run the four project demos and the integrated demo.
 
 ## Evaluation criteria
 
@@ -258,12 +253,12 @@ This repo connects to broader work on:
 
 Near-term roadmap:
 
-1. Run all four demos locally and capture actual output in result files.
+1. Run all demos locally and capture actual terminal output in result files.
 2. Add persistent concept memory write-back for Project 02.
 3. Persist induced rules to `examples/induced_rules.json` for Project 04.
-4. Connect Project 03 symbolic predicates to Project 01 sparse rule selection.
-5. Connect Project 03 symbolic attributes to Project 02 concept retrieval.
-6. Connect Project 04 induced rules to Project 01 rule execution.
-7. Build one integrated loop across symbolic state, concept memory, sparse rules, rule induction, and evaluation.
+4. Replace the current fact normalizer with a more general predicate parser.
+5. Add deeper integration tests that execute the full integrated demo path.
+6. Add one visual architecture diagram.
+7. Package the repo with a simple dependency file and unified test command.
 
 Longer term, the goal is to connect sparse reasoning, memory-backed concepts, symbolic state extraction, and rule induction into a coherent reasoning architecture for embodied agents.
