@@ -1,0 +1,94 @@
+[
+  {
+    "concept_id": "concept_fragile_object",
+    "name": "fragile_object",
+    "description": "Objects marked fragile or made of glass should be handled with reduced force and slower motion.",
+    "trigger_conditions": [
+      "object_fragile",
+      "material_glass"
+    ],
+    "recommended_effects": [
+      "avoid_high_force",
+      "slow_motion"
+    ],
+    "confidence": 0.85,
+    "evidence": [
+      "seed_manual_rule"
+    ],
+    "failure_notes": [],
+    "status": "active"
+  },
+  {
+    "concept_id": "concept_blocked_path",
+    "name": "blocked_path",
+    "description": "Blocked paths require alternate route planning before action execution.",
+    "trigger_conditions": [
+      "path_blocked",
+      "obstacle_detected"
+    ],
+    "recommended_effects": [
+      "select_alternate_path"
+    ],
+    "confidence": 0.8,
+    "evidence": [
+      "seed_manual_rule"
+    ],
+    "failure_notes": [],
+    "status": "active"
+  },
+  {
+    "concept_id": "concept_unknown_object",
+    "name": "unknown_object",
+    "description": "Unknown objects should be inspected before the system commits to an action.",
+    "trigger_conditions": [
+      "object_unknown",
+      "low_object_confidence"
+    ],
+    "recommended_effects": [
+      "inspect_before_action"
+    ],
+    "confidence": 0.78,
+    "evidence": [
+      "seed_manual_rule"
+    ],
+    "failure_notes": [],
+    "status": "active"
+  },
+  {
+    "concept_id": "concept_slippery_surface",
+    "name": "slippery_surface",
+    "description": "Slippery surfaces require additional stability checks before manipulation.",
+    "trigger_conditions": [
+      "surface_slippery",
+      "low_friction_surface"
+    ],
+    "recommended_effects": [
+      "increase_stability_check",
+      "slow_motion"
+    ],
+    "confidence": 0.74,
+    "evidence": [
+      "seed_manual_rule"
+    ],
+    "failure_notes": [],
+    "status": "active"
+  },
+  {
+    "concept_id": "concept_operator_review_preference",
+    "name": "operator_review_preference",
+    "description": "Some operators or contexts require manual review before execution.",
+    "trigger_conditions": [
+      "operator_prefers_review",
+      "requires_manual_approval"
+    ],
+    "recommended_effects": [
+      "request_manual_review"
+    ],
+    "confidence": 0.82,
+    "evidence": [
+      "seed_manual_rule"
+    ],
+    "failure_notes": [],
+    "status": "active"
+  }
+]
