@@ -1,0 +1,53 @@
+{
+  "episode_id": "episode_tabletop_001",
+  "state_id": "state_tabletop_001",
+  "source": "structured_scene",
+  "objects": [
+    {
+      "object_id": "block_red",
+      "object_type": "block",
+      "attributes": {
+        "color": "red",
+        "shape": "cube",
+        "size": "small",
+        "material": "plastic"
+      },
+      "position": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "confidence": 0.98
+    },
+    {
+      "object_id": "sphere_blue",
+      "object_type": "sphere",
+      "attributes": {
+        "color": "blue",
+        "shape": "sphere",
+        "size": "large",
+        "material": "rubber"
+      },
+      "position": {
+        "x": 4.0,
+        "y": 2.0
+      },
+      "confidence": 0.96
+    },
+    {
+      "object_id": "cup_glass",
+      "object_type": "cup",
+      "attributes": {
+        "color": "clear",
+        "shape": "cylinder",
+        "size": "medium",
+        "material": "glass",
+        "fragile": "true"
+      },
+      "position": {
+        "x": 2.0,
+        "y": 5.0
+      },
+      "confidence": 0.92
+    }
+  ]
+}
