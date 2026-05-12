@@ -2,12 +2,36 @@
 
 This project explores whether logical reasoning can be performed with minimal active structure instead of dense, opaque activation.
 
-The goal is to build a small runnable prototype that compares dense reasoning behavior with sparse reasoning behavior on simple logical tasks.
+The current prototype compares sparse rule activation against a dense baseline on simple logical tasks. The system is intentionally small, explicit, and inspectable.
 
 ## Core question
 
 ```text
 What is the smallest active reasoning structure that can still solve the task correctly?
+```
+
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- explicit rule definitions
+- sparse rule selector
+- dense baseline selector
+- rule executor
+- evaluator
+- demo tasks
+- command-line demo
+- tests
+- baseline comparison notes
+
+Estimated project status:
+
+```text
+70% complete
 ```
 
 ## Why this matters
@@ -22,76 +46,99 @@ For real-world deployment, especially in robotics and embodied agents, reasoning
 - traceable
 - robust under constraints
 
-Sparse logical reasoning is the first step toward that direction.
+Sparse logical reasoning is the first technical proof in this repository.
 
-## Project goal
-
-Build a minimal system that can:
-
-1. Receive a logical task.
-2. Select only the relevant reasoning path.
-3. Produce an answer.
-4. Show the active reasoning trace.
-5. Compare sparse behavior against a dense baseline.
-
-## Initial task types
-
-The first prototype should use simple logical tasks before moving to richer reasoning.
-
-Possible task types:
-
-| Task type | Example |
-|---|---|
-| Boolean logic | `A AND B` |
-| Rule matching | `if fragile then reduce_force` |
-| Predicate reasoning | `red(block_1) and cube(block_1)` |
-| Relation reasoning | `left_of(a, b)` and `left_of(b, c)` implies `left_of(a, c)` |
-| Constraint checking | `action is unsafe if object is fragile and grip force is high` |
-
-## Minimal architecture
+## Architecture
 
 ```text
-Task Input → Candidate Rules → Sparse Rule Selection → Execution → Answer → Trace → Evaluation
+Task Facts → Rule Selection → Rule Execution → Answer → Trace → Evaluation
 ```
+
+The prototype has two reasoning paths:
+
+| Path | Behavior |
+|---|---|
+| Sparse | Selects only rules whose conditions match the input facts |
+| Dense baseline | Selects all rules, then lets the executor filter matching rules |
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| Task input | Defines the logical problem to solve |
-| Rule set | Contains available rules or logical operations |
-| Sparse selector | Chooses only relevant rules |
-| Executor | Applies selected rules |
-| Trace generator | Records the reasoning path |
-| Evaluator | Checks correctness, sparsity, and trace quality |
+| `src/rules.py` | Defines explicit symbolic rules and the default rule set |
+| `src/selector.py` | Implements sparse and dense rule selection |
+| `src/executor.py` | Applies selected rules and generates answers plus traces |
+| `src/evaluator.py` | Checks correctness, sparsity ratio, and trace clarity |
+| `examples/demo_tasks.json` | Contains structured demo tasks and expected answers |
+| `run_demo.py` | Runs sparse vs dense comparison from the command line |
+| `tests/test_sparse_reasoning.py` | Regression tests for core reasoning behavior |
+| `results/baseline_comparison.md` | Documents expected sparse vs dense behavior |
 
-## Dense baseline
+## Rule set
 
-The dense baseline should apply all available rules or evaluate all possible reasoning paths.
+The default prototype includes 8 rules:
 
-Purpose:
+| Rule | Effect |
+|---|---|
+| Fragile object + high force | `action_unsafe` |
+| Fragile object + low force | `action_safe` |
+| Blocked path | `needs_replan` |
+| Clear path | `continue_plan` |
+| Heavy object | `use_slow_speed` |
+| Slippery surface | `increase_stability_check` |
+| Operator prefers review | `request_manual_review` |
+| Unknown object | `inspect_object` |
 
-```text
-Show what happens when the system does not selectively activate reasoning structure.
+## Demo tasks
+
+The demo currently includes 7 tasks:
+
+| Task | Expected answer |
+|---|---|
+| `task_fragile_high_force` | `action_unsafe` |
+| `task_fragile_low_force` | `action_safe` |
+| `task_blocked_path` | `needs_replan` |
+| `task_unknown_object` | `inspect_object` |
+| `task_manual_review` | `request_manual_review` |
+| `task_heavy_object` | `use_slow_speed` |
+| `task_no_match` | `no_rule_matched` |
+
+## Run the demo
+
+From the repository root:
+
+```bash
+python projects/01_sparse_logical_reasoning/run_demo.py
 ```
 
-Expected behavior:
+The demo prints:
 
-- more active rules
-- more unnecessary computation
-- less clean trace
-- same or similar answer on simple tasks
+- sparse path result
+- dense baseline result
+- expected answer
+- actual answer
+- active rule count
+- sparsity ratio
+- reasoning trace
+- summary comparison
 
-## Sparse reasoning prototype
+## Run tests
 
-The sparse version should activate only the rules relevant to the current task.
+From the repository root:
 
-Expected behavior:
+```bash
+python -m pytest projects/01_sparse_logical_reasoning/tests
+```
 
-- fewer active rules
-- clearer trace
-- same correct answer
-- better interpretability
+## Example trace
+
+```text
+Task: task_fragile_high_force
+Input facts: object_fragile, grip_force_high
+Activated rule_fragile_high_force_unsafe: conditions [grip_force_high, object_fragile] -> effect [action_unsafe]
+Inferred effects: action_unsafe
+Answer: action_unsafe
+```
 
 ## Evaluation metrics
 
@@ -101,83 +148,56 @@ Expected behavior:
 | Active rule count | How many rules were activated? |
 | Sparsity ratio | Active rules divided by total available rules |
 | Trace clarity | Can the reasoning path be understood? |
-| Latency | How long did execution take? |
 
-## Minimum viable demo
+Expected first comparison:
 
-The first demo should run from the command line.
+| Path | Expected accuracy | Expected average sparsity ratio |
+|---|---:|---:|
+| Sparse | 1.0 | ~0.107 |
+| Dense baseline | 1.0 | 1.0 |
 
-Example target behavior:
+The sparse path should preserve correctness while activating far fewer rules.
 
-```text
-Input task:
-object is fragile and grip force is high
+## What this prototype proves
 
-Selected rules:
-- fragile_object_rule
-- high_force_risk_rule
+This project does not claim general reasoning ability yet.
 
-Answer:
-action is unsafe
-
-Trace:
-1. Detected fragile object
-2. Detected high grip force
-3. Activated safety constraint
-4. Classified action as unsafe
-
-Evaluation:
-correct=true
-active_rules=2
-total_rules=6
-sparsity_ratio=0.33
-```
-
-## Planned file structure
+It proves a smaller, useful loop:
 
 ```text
-projects/01_sparse_logical_reasoning/
-├── README.md
-├── src/
-│   ├── rules.py
-│   ├── selector.py
-│   ├── executor.py
-│   └── evaluator.py
-├── examples/
-│   └── demo_tasks.json
-├── tests/
-│   └── test_sparse_reasoning.py
-└── results/
-    └── baseline_comparison.md
+input facts → relevant rule selection → answer → trace → evaluation
 ```
 
-## Current status
+That loop can be extended into richer symbolic state, memory-backed concepts, rule induction, and planning.
 
-```text
-Design phase
-```
+## Current limitations
 
-This project does not yet have the runnable implementation. The immediate goal is to define the interface, task format, and evaluation criteria before writing the prototype.
+- Rules are hand-written.
+- Task facts are structured manually.
+- No learned rule induction yet.
+- No concept memory yet.
+- No natural language interface yet.
+- No robotics integration yet.
+- Dense baseline is intentionally simple.
 
 ## Next steps
 
-1. Define the task input schema.
-2. Define the rule representation.
-3. Create dense baseline evaluator.
-4. Create sparse rule selector.
-5. Add command-line demo.
-6. Add tests.
-7. Add result table comparing dense vs sparse reasoning.
+1. Run the demo locally and update `results/baseline_comparison.md` with actual output.
+2. Add a small result table generated from the demo run.
+3. Add more tasks involving multiple simultaneous facts.
+4. Add conflict handling between rules.
+5. Add simple latency measurement.
+6. Connect this project to Project 02: Memory-Backed Concepts.
 
 ## Completion target
 
-This project reaches a useful first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- runnable demo
-- at least 5 logical tasks
-- dense vs sparse comparison
-- reasoning trace output
-- basic tests
-- result table
+- demo output captured in results
+- more multi-rule tasks
+- conflict tests
+- latency measurement
+- richer baseline comparison
+- cleaner packaging for external readers
 
-At that point, Project 01 becomes the first working technical proof for the repository.
+At that point, Project 01 will move from first runnable prototype to polished technical proof.
