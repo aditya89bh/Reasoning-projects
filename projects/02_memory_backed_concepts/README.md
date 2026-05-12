@@ -1,13 +1,38 @@
 # Project 02: Memory-Backed Concepts
 
-This project explores how reasoning systems can store, retrieve, and reuse concepts through external memory instead of relying only on model parameters.
+This project explores how reasoning systems can store, retrieve, reuse, and update concepts through external memory instead of relying only on model parameters.
 
-The goal is to design a concept memory layer that supports abstraction, reuse, composition, and adaptation from limited examples.
+The current prototype implements a small deterministic concept memory loop. It loads seed concepts, retrieves relevant concepts from task facts, converts them into recommendations, updates concept confidence after outcomes, and prints inspectable traces.
 
 ## Core question
 
 ```text
 Can concepts be learned, stored, retrieved, reused, and composed without retraining the whole model?
+```
+
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- explicit concept data model
+- JSON-backed concept memory
+- deterministic concept retrieval
+- reasoning adapter
+- memory confidence updater
+- seed concept memory
+- demo tasks
+- command-line demo
+- tests
+- retrieval example documentation
+
+Estimated project status:
+
+```text
+65-70% complete
 ```
 
 ## Why this matters
@@ -27,204 +52,217 @@ For robotics and embodied agents, concept memory can help with:
 
 Memory-backed concepts give agents continuity without requiring constant retraining.
 
-## Project goal
-
-Build a minimal concept memory system that can:
-
-1. Store concepts in an explicit format.
-2. Retrieve relevant concepts for a task.
-3. Apply retrieved concepts during reasoning.
-4. Update concept confidence from outcomes.
-5. Produce a trace showing which concepts were used.
-
-## Example concepts
-
-| Concept | Meaning | Possible use |
-|---|---|---|
-| fragile_object | Object should be handled with reduced force | Grasp planning |
-| blocked_path | Direct path is obstructed | Replanning |
-| safe_grasp | Previously successful grasp configuration | Skill reuse |
-| slippery_surface | Object or support surface has low friction | Motion constraint |
-| operator_preference | User prefers a specific process or action | Personalization |
-| repeated_failure | Similar attempt has failed before | Strategy change |
-
-## Minimal architecture
+## Architecture
 
 ```text
-Task State → Concept Query → Concept Memory → Retrieved Concepts → Reasoning Use → Trace → Memory Update
+Task Facts → Concept Memory → Retrieval → Reasoning Adapter → Recommendation → Memory Update
 ```
+
+The first prototype uses structured task facts and deterministic trigger matching. This keeps the system easy to inspect before adding semantic retrieval or learned representations.
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| Concept schema | Defines what a concept contains |
-| Memory store | Holds reusable concepts |
-| Retriever | Finds relevant concepts for the current task |
-| Reasoning adapter | Applies retrieved concepts to reasoning |
-| Update mechanism | Adjusts confidence or records outcomes |
-| Trace generator | Shows which concepts influenced the result |
+| `src/concept.py` | Defines the reusable concept data model |
+| `src/memory_store.py` | Loads, saves, searches, and updates concepts |
+| `src/retriever.py` | Retrieves relevant concepts and produces retrieval traces |
+| `src/adapter.py` | Converts retrieved concept effects into recommendations |
+| `src/updater.py` | Updates concept confidence after success or failure |
+| `examples/concept_memory.json` | Seed concept memory |
+| `examples/demo_tasks.json` | Structured demo tasks with expected outputs |
+| `run_demo.py` | Runs retrieval, recommendation, and update loop |
+| `tests/test_concept_memory.py` | Regression tests for retrieval and updates |
+| `results/retrieval_examples.md` | Documents expected retrieval behavior |
+
+## Seed concepts
+
+The demo starts with five concepts:
+
+| Concept | Trigger examples | Recommended effects |
+|---|---|---|
+| `concept_fragile_object` | `object_fragile`, `material_glass` | `avoid_high_force`, `slow_motion` |
+| `concept_blocked_path` | `path_blocked`, `obstacle_detected` | `select_alternate_path` |
+| `concept_unknown_object` | `object_unknown`, `low_object_confidence` | `inspect_before_action` |
+| `concept_slippery_surface` | `surface_slippery`, `low_friction_surface` | `increase_stability_check`, `slow_motion` |
+| `concept_operator_review_preference` | `operator_prefers_review`, `requires_manual_approval` | `request_manual_review` |
+
+## Demo tasks
+
+| Task | Expected concept behavior | Expected recommendation |
+|---|---|---|
+| `task_pick_glass_object` | Retrieve fragile object concept | `use_low_force_strategy` |
+| `task_blocked_path_replan` | Retrieve blocked path concept | `replan_with_alternate_path` |
+| `task_unknown_object_inspection` | Retrieve unknown object concept | `inspect_object_first` |
+| `task_slippery_surface` | Retrieve slippery surface and fragile object concepts | `use_low_force_strategy` |
+| `task_operator_review` | Retrieve operator review and fragile object concepts | `request_manual_review` |
+| `task_no_concept_match` | Retrieve no concepts | `no_concept_recommendation` |
 
 ## Concept schema
 
-A minimal concept should include:
+A minimal concept includes:
 
 ```text
-id
+concept_id
 name
 description
 trigger_conditions
-recommended_action
+recommended_effects
 confidence
 evidence
-last_used
 failure_notes
+status
 ```
 
 Example:
 
 ```text
-id: concept_fragile_object
+concept_id: concept_fragile_object
 name: fragile_object
-description: Object may break under high force.
+description: Objects marked fragile or made of glass should be handled with reduced force and slower motion.
 trigger_conditions:
-  - object.material == glass
-  - object.label includes fragile
-recommended_action:
-  - reduce grip force
-  - slow approach speed
+  - object_fragile
+  - material_glass
+recommended_effects:
+  - avoid_high_force
+  - slow_motion
 confidence: 0.85
 evidence:
-  - previous successful low-force grasp
-failure_notes:
-  - high-force grasp caused damage in prior attempt
+  - seed_manual_rule
+failure_notes: []
+status: active
 ```
 
 ## Retrieval behavior
 
-The retriever should support more than generic similarity search.
+The first version uses trigger-condition overlap.
 
-Useful retrieval modes:
-
-| Retrieval mode | Purpose |
-|---|---|
-| Attribute match | Retrieve concepts linked to object properties |
-| Task match | Retrieve concepts linked to similar goals |
-| Failure match | Retrieve concepts from past failed attempts |
-| Constraint match | Retrieve relevant safety or process rules |
-| Hybrid match | Combine semantic and symbolic retrieval |
-
-## Reasoning trace
-
-The system should expose concept use clearly.
-
-Example trace:
+A concept is retrieved when one or more trigger conditions match the task facts. Concepts are ranked by a simple score:
 
 ```text
-Task: pick object_12
-State: object_12 material=glass, weight=low
-Retrieved concept: fragile_object
-Reasoning effect: reduce grip force and approach speed
-Action recommendation: low-force grasp
-Evaluation: successful grasp
-Memory update: confidence +0.03
+overlap_score × confidence
 ```
 
-This makes memory operational rather than decorative.
+This is deliberately simple. It gives a deterministic baseline before adding embeddings, hybrid retrieval, or learned concept matching.
+
+## Reasoning behavior
+
+Retrieved concepts are converted into recommendations through the reasoning adapter.
+
+Examples:
+
+| Retrieved effect | Recommendation |
+|---|---|
+| `avoid_high_force` | `use_low_force_strategy` |
+| `select_alternate_path` | `replan_with_alternate_path` |
+| `inspect_before_action` | `inspect_object_first` |
+| `request_manual_review` | `request_manual_review` |
+
+Manual review has priority over other recommendations because it represents a process constraint.
+
+## Memory update behavior
+
+The updater modifies concept confidence after outcomes.
+
+| Outcome | Behavior |
+|---|---|
+| `success` | Adds evidence and increases confidence |
+| `safe` | Adds evidence and increases confidence |
+| `correct` | Adds evidence and increases confidence |
+| `failure` | Adds failure note and decreases confidence |
+| `unsafe` | Adds failure note and decreases confidence |
+| `incorrect` | Adds failure note and decreases confidence |
+
+## Run the demo
+
+From the repository root:
+
+```bash
+python projects/02_memory_backed_concepts/run_demo.py
+```
+
+The demo prints:
+
+- task facts
+- expected concepts
+- retrieved concepts
+- expected recommendation
+- actual recommendation
+- retrieval trace
+- reasoning trace
+- update trace
+- aggregate match summary
+
+## Run tests
+
+From the repository root:
+
+```bash
+python -m pytest projects/02_memory_backed_concepts/tests
+```
+
+## Example trace
+
+```text
+Task: task_pick_glass_object
+Task facts: material_glass, object_light
+Retrieved concept_fragile_object: matched [material_glass], score=0.425, confidence=0.85
+Recommended effects: avoid_high_force, slow_motion
+Recommendation: use_low_force_strategy
+Updated concept_fragile_object: success evidence added, confidence=0.88
+```
 
 ## Evaluation metrics
 
 | Metric | Meaning |
 |---|---|
-| Retrieval relevance | Did the system retrieve the right concept? |
-| Concept reuse | Was prior knowledge applied correctly? |
-| Reasoning impact | Did the concept change the decision? |
-| Outcome improvement | Did memory improve success or safety? |
-| Trace clarity | Can a human see why the concept was used? |
-| Update quality | Did the system update memory after feedback? |
+| Concept match | Did the system retrieve the expected concepts? |
+| Recommendation match | Did the system produce the expected recommendation? |
+| Trace clarity | Can retrieval and recommendation be inspected? |
+| Memory update | Did concept confidence change after outcome? |
+| No-match handling | Does the system handle missing concepts explicitly? |
 
-## Minimum viable demo
+## What this prototype proves
 
-The first demo should use structured task states and a small hand-written concept memory.
+This project does not claim full memory-based reasoning yet.
 
-Example target behavior:
-
-```text
-Input task:
-pick object_12
-
-Task state:
-material=glass
-weight=low
-surface=smooth
-
-Retrieved concept:
-fragile_object
-
-Reasoning adjustment:
-reduce_grip_force=true
-slow_approach=true
-
-Output:
-recommended_action=low_force_grasp
-
-Trace:
-1. Detected glass material
-2. Retrieved fragile_object concept
-3. Applied low-force handling constraint
-4. Recommended low-force grasp
-5. Stored successful outcome
-```
-
-## Planned file structure
+It proves a smaller operational loop:
 
 ```text
-projects/02_memory_backed_concepts/
-├── README.md
-├── src/
-│   ├── concept.py
-│   ├── memory_store.py
-│   ├── retriever.py
-│   ├── adapter.py
-│   └── updater.py
-├── examples/
-│   ├── concept_memory.json
-│   └── demo_tasks.json
-├── tests/
-│   └── test_concept_memory.py
-└── results/
-    └── retrieval_examples.md
+retrieved concept → reasoning effect → recommendation → outcome → confidence update
 ```
 
-## Current status
+That loop is the first working memory-backed abstraction layer for the reasoning stack.
 
-```text
-Design phase
-```
+## Current limitations
 
-This project does not yet have the runnable implementation. The immediate goal is to define concept schema, retrieval modes, and trace format before implementing the memory prototype.
+- Retrieval is deterministic trigger matching.
+- No semantic embedding retrieval yet.
+- No natural language input yet.
+- No persistent write-back to the seed JSON after demo runs.
+- No advanced conflict resolution between concepts.
+- No connection to Project 01 rule execution yet.
+- No robotics integration yet.
 
 ## Next steps
 
-1. Define the concept schema.
-2. Create a small hand-written concept memory.
-3. Define structured task input format.
-4. Implement retrieval logic.
-5. Apply retrieved concepts to reasoning outputs.
-6. Add trace generation.
-7. Add update behavior after success or failure.
-8. Add tests and retrieval examples.
+1. Run the demo locally and capture actual output.
+2. Add persistent memory write-back after updates.
+3. Add semantic or hybrid retrieval.
+4. Add concept conflict handling.
+5. Add more task examples.
+6. Connect retrieved concepts to Project 01 rule selection.
+7. Add richer result tables.
 
 ## Completion target
 
-This project reaches a useful first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- explicit concept schema
-- concept memory file
-- retrieval prototype
-- at least 5 task examples
-- reasoning trace output
-- memory update example
-- basic tests
+- persistent update behavior
+- actual demo output captured in results
+- hybrid symbolic + semantic retrieval
+- conflict handling
+- richer concept examples
+- integration with sparse logical reasoning
 
-At that point, Project 02 becomes the first working memory-backed abstraction layer for the reasoning stack.
+At that point, Project 02 will move from first prototype to a more serious memory-backed reasoning module.
