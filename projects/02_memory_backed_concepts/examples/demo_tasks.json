@@ -1,0 +1,80 @@
+[
+  {
+    "task_id": "task_pick_glass_object",
+    "description": "Glass object should retrieve fragile object concept and recommend low-force handling.",
+    "facts": [
+      "material_glass",
+      "object_light"
+    ],
+    "expected_concepts": [
+      "concept_fragile_object"
+    ],
+    "expected_recommendation": "use_low_force_strategy",
+    "outcome": "success"
+  },
+  {
+    "task_id": "task_blocked_path_replan",
+    "description": "Blocked path should retrieve blocked path concept and recommend alternate path planning.",
+    "facts": [
+      "path_blocked",
+      "object_target_visible"
+    ],
+    "expected_concepts": [
+      "concept_blocked_path"
+    ],
+    "expected_recommendation": "replan_with_alternate_path",
+    "outcome": "success"
+  },
+  {
+    "task_id": "task_unknown_object_inspection",
+    "description": "Unknown object should retrieve inspection concept before action.",
+    "facts": [
+      "object_unknown",
+      "workspace_clear"
+    ],
+    "expected_concepts": [
+      "concept_unknown_object"
+    ],
+    "expected_recommendation": "inspect_object_first",
+    "outcome": "success"
+  },
+  {
+    "task_id": "task_slippery_surface",
+    "description": "Slippery surface should retrieve stability concept and recommend stability check.",
+    "facts": [
+      "surface_slippery",
+      "object_fragile"
+    ],
+    "expected_concepts": [
+      "concept_slippery_surface",
+      "concept_fragile_object"
+    ],
+    "expected_recommendation": "use_low_force_strategy",
+    "outcome": "success"
+  },
+  {
+    "task_id": "task_operator_review",
+    "description": "Operator review preference should retrieve manual review concept.",
+    "facts": [
+      "operator_prefers_review",
+      "object_fragile"
+    ],
+    "expected_concepts": [
+      "concept_operator_review_preference",
+      "concept_fragile_object"
+    ],
+    "expected_recommendation": "request_manual_review",
+    "outcome": "success"
+  },
+  {
+    "task_id": "task_no_concept_match",
+    "description": "Unrecognized facts should retrieve no concepts and return no recommendation.",
+    "facts": [
+      "object_standard",
+      "path_clear"
+    ],
+    "expected_concepts": [],
+    "expected_recommendation": "no_concept_recommendation",
+    "outcome": "success"
+  }
+]
