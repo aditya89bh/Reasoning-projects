@@ -57,27 +57,36 @@ Each project in this repository studies one layer of that stack.
 
 | Project | Goal | Status | Output |
 |---|---|---:|---|
-| 01 Sparse Logical Reasoning | Discover minimal sparse circuits for logical reasoning | Planned / scaffold | Prototype + notes |
-| 02 Memory-Backed Concepts | Store and reuse concepts through external memory | Planned | Architecture design |
-| 03 Visual-to-Symbolic State | Convert perception into structured symbolic states | Planned | State extraction spec |
-| 04 Rule Induction | Learn explicit rules from examples | Planned | Future prototype |
+| 01 Sparse Logical Reasoning | Compare sparse rule activation against a dense baseline | Runnable first prototype | Demo, tests, traces, baseline comparison |
+| 02 Memory-Backed Concepts | Store, retrieve, reuse, and update concepts through external memory | Runnable first prototype | Demo, tests, seed memory, retrieval examples |
+| 03 Visual-to-Symbolic State | Convert perception into structured symbolic states | Design phase | State extraction spec |
+| 04 Rule Induction | Learn explicit rules from examples | Design phase | Rule induction spec |
 
 ## Current status
 
-This repository is in the early architecture phase.
+This repository has moved from pure architecture into early runnable prototypes.
 
-Current focus:
+Current state:
 
-1. Define the reasoning stack.
-2. Create project-level specifications.
-3. Establish shared interfaces.
-4. Build the first runnable sparse logical reasoning prototype.
+1. Reasoning stack is documented.
+2. Design principles are documented.
+3. Shared interfaces are documented.
+4. Evaluation criteria are documented.
+5. Project 01 has a runnable sparse logical reasoning prototype.
+6. Project 02 has a runnable memory-backed concepts prototype.
+7. Projects 03 and 04 remain design-phase scaffolds.
 
-This repo is not yet a finished implementation. It is a structured build path toward a sparse, memory-backed reasoning system.
+This repo is not yet a finished integrated reasoning system. It is now a working research scaffold with two runnable modules.
+
+Estimated repository status:
+
+```text
+60-65% complete
+```
 
 ## Repository structure
 
-Target structure:
+Current structure:
 
 ```text
 Reasoning-projects/
@@ -89,9 +98,19 @@ Reasoning-projects/
 │   └── open_questions.md
 ├── projects/
 │   ├── 01_sparse_logical_reasoning/
-│   │   └── README.md
+│   │   ├── README.md
+│   │   ├── run_demo.py
+│   │   ├── src/
+│   │   ├── examples/
+│   │   ├── tests/
+│   │   └── results/
 │   ├── 02_memory_backed_concepts/
-│   │   └── README.md
+│   │   ├── README.md
+│   │   ├── run_demo.py
+│   │   ├── src/
+│   │   ├── examples/
+│   │   ├── tests/
+│   │   └── results/
 │   ├── 03_visual_symbolic_state/
 │   │   └── README.md
 │   └── 04_rule_induction/
@@ -103,20 +122,64 @@ Reasoning-projects/
     └── reading_list.md
 ```
 
+## Runnable prototypes
+
+## Project 01: Sparse Logical Reasoning
+
+Run from the repository root:
+
+```bash
+python projects/01_sparse_logical_reasoning/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/01_sparse_logical_reasoning/tests
+```
+
+What it demonstrates:
+
+```text
+input facts → sparse rule selection → execution → answer → trace → evaluation
+```
+
+## Project 02: Memory-Backed Concepts
+
+Run from the repository root:
+
+```bash
+python projects/02_memory_backed_concepts/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/02_memory_backed_concepts/tests
+```
+
+What it demonstrates:
+
+```text
+task facts → concept retrieval → recommendation → outcome update → memory trace
+```
+
 ## How to use this repository
 
 Start with:
 
 1. `docs/reasoning_stack.md`
 2. `docs/design_principles.md`
-3. `docs/roadmap.md`
-4. `projects/01_sparse_logical_reasoning/README.md`
+3. `shared/interfaces.md`
+4. `shared/evaluation.md`
+5. `projects/01_sparse_logical_reasoning/README.md`
+6. `projects/02_memory_backed_concepts/README.md`
 
-The repo should be read as a staged reasoning-system roadmap. The first priority is architectural clarity. Implementation follows the stack.
+Then run the two working demos.
 
 ## Evaluation criteria
 
-Each project will be evaluated using both technical and practical criteria.
+Each project is evaluated using both technical and practical criteria.
 
 | Metric | Meaning |
 |---|---|
@@ -140,8 +203,13 @@ This repo connects to broader work on:
 
 ## Roadmap
 
-The next milestone is to complete Project 01: Sparse Logical Reasoning.
+Near-term roadmap:
 
-The minimum target is a runnable prototype that compares dense and sparse reasoning behavior on simple logical tasks, with accuracy, sparsity, and traceability as evaluation criteria.
+1. Run both working demos locally and capture actual output in result files.
+2. Add persistent concept memory write-back for Project 02.
+3. Connect Project 02 concept retrieval to Project 01 rule selection.
+4. Start Project 03 runnable prototype for visual-to-symbolic state.
+5. Start Project 04 runnable prototype for rule induction.
+6. Build an integrated loop across symbolic state, concept memory, sparse rules, and evaluation.
 
 Longer term, the goal is to connect sparse reasoning, memory-backed concepts, symbolic state extraction, and rule induction into a coherent reasoning architecture for embodied agents.
