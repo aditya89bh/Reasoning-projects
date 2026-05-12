@@ -1,0 +1,61 @@
+[
+  {
+    "task_id": "task_fragile_high_force",
+    "description": "Fragile object handled with high grip force should be unsafe.",
+    "facts": [
+      "object_fragile",
+      "grip_force_high"
+    ],
+    "expected_answer": "action_unsafe"
+  },
+  {
+    "task_id": "task_fragile_low_force",
+    "description": "Fragile object handled with low grip force should be safe.",
+    "facts": [
+      "object_fragile",
+      "grip_force_low"
+    ],
+    "expected_answer": "action_safe"
+  },
+  {
+    "task_id": "task_blocked_path",
+    "description": "Blocked path should trigger replanning.",
+    "facts": [
+      "path_blocked"
+    ],
+    "expected_answer": "needs_replan"
+  },
+  {
+    "task_id": "task_unknown_object",
+    "description": "Unknown object should trigger inspection before action.",
+    "facts": [
+      "object_unknown"
+    ],
+    "expected_answer": "inspect_object"
+  },
+  {
+    "task_id": "task_manual_review",
+    "description": "Operator preference should request manual review.",
+    "facts": [
+      "operator_prefers_review"
+    ],
+    "expected_answer": "request_manual_review"
+  },
+  {
+    "task_id": "task_heavy_object",
+    "description": "Heavy object should use slow speed.",
+    "facts": [
+      "object_heavy"
+    ],
+    "expected_answer": "use_slow_speed"
+  },
+  {
+    "task_id": "task_no_match",
+    "description": "Unrecognized facts should produce no matched rule.",
+    "facts": [
+      "object_light",
+      "grip_force_medium"
+    ],
+    "expected_answer": "no_rule_matched"
+  }
+]
