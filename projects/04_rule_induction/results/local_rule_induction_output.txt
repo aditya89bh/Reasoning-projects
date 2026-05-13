@@ -1,0 +1,82 @@
+Loaded episodes: 9
+
+========================================================================
+Detected patterns
+========================================================================
+pattern_000: fact=grip_force_high, action=high_force_grasp, outcome=failure, count=2, episodes=['ep_001', 'ep_002']
+pattern_001: fact=grip_force_low, action=low_force_grasp, outcome=success, count=2, episodes=['ep_003', 'ep_004']
+pattern_004: fact=object_fragile, action=high_force_grasp, outcome=failure, count=2, episodes=['ep_001', 'ep_002']
+pattern_009: fact=operator_prefers_review, action=manual_review, outcome=success, count=2, episodes=['ep_008', 'ep_009']
+pattern_011: fact=path_blocked, action=direct_path_plan, outcome=failure, count=2, episodes=['ep_005', 'ep_006']
+
+========================================================================
+Scored rules
+========================================================================
+rule_000_grip_force_high_avoid_high_force_grasp: If grip_force_high then avoid_high_force_grasp | effect=avoid_high_force_grasp | confidence=0.8056 | coverage=0.2222 | precision=1.0 | status=accepted
+rule_001_grip_force_low_prefer_low_force_grasp: If grip_force_low then prefer_low_force_grasp | effect=prefer_low_force_grasp | confidence=0.8056 | coverage=0.2222 | precision=1.0 | status=accepted
+rule_002_object_fragile_avoid_high_force_grasp: If object_fragile then avoid_high_force_grasp | effect=avoid_high_force_grasp | confidence=0.5361 | coverage=0.4444 | precision=0.5 | status=candidate
+rule_003_operator_prefers_review_prefer_manual_review: If operator_prefers_review then prefer_manual_review | effect=prefer_manual_review | confidence=0.8056 | coverage=0.2222 | precision=1.0 | status=accepted
+rule_004_path_blocked_avoid_direct_path_plan: If path_blocked then avoid_direct_path_plan | effect=avoid_direct_path_plan | confidence=0.6167 | coverage=0.3333 | precision=0.6667 | status=candidate
+
+Accepted rules: 3
+Candidate rules: 2
+
+========================================================================
+Future task application
+========================================================================
+
+Task: future_fragile_high_force
+Facts: ['object_fragile', 'grip_force_high']
+Expected: avoid_high_force_grasp
+Recommendation: avoid_high_force_grasp
+Matched expected: True
+Trace:
+ - Task: future_fragile_high_force
+ - Facts: object_fragile, grip_force_high
+ - Matched rule_000_grip_force_high_avoid_high_force_grasp: conditions [grip_force_high] -> effect [avoid_high_force_grasp], confidence=0.8056
+ - Effects: avoid_high_force_grasp
+ - Recommendation: avoid_high_force_grasp
+
+Task: future_blocked_path
+Facts: ['path_blocked', 'target_visible']
+Expected: avoid_direct_path_plan
+Recommendation: no_rule_recommendation
+Matched expected: False
+Trace:
+ - Task: future_blocked_path
+ - Facts: path_blocked, target_visible
+ - No induced rules matched.
+ - Recommendation: no_rule_recommendation
+
+Task: future_operator_review
+Facts: ['operator_prefers_review', 'task_sensitive']
+Expected: prefer_manual_review
+Recommendation: prefer_manual_review
+Matched expected: True
+Trace:
+ - Task: future_operator_review
+ - Facts: operator_prefers_review, task_sensitive
+ - Matched rule_003_operator_prefers_review_prefer_manual_review: conditions [operator_prefers_review] -> effect [prefer_manual_review], confidence=0.8056
+ - Effects: prefer_manual_review
+ - Recommendation: prefer_manual_review
+
+Task: future_no_match
+Facts: ['object_standard', 'path_clear']
+Expected: no_rule_recommendation
+Recommendation: no_rule_recommendation
+Matched expected: True
+Trace:
+ - Task: future_no_match
+ - Facts: object_standard, path_clear
+ - No induced rules matched.
+ - Recommendation: no_rule_recommendation
+
+========================================================================
+Summary
+========================================================================
+future_fragile_high_force    | recommendation=avoid_high_force_grasp       | matched=True
+future_blocked_path          | recommendation=no_rule_recommendation       | matched=False
+future_operator_review       | recommendation=prefer_manual_review         | matched=True
+future_no_match              | recommendation=no_rule_recommendation       | matched=True
+
+future_task_recommendation_accuracy=0.750

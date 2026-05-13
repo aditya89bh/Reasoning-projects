@@ -1,0 +1,38 @@
+========================================================================
+Integrated Reasoning Demo
+========================================================================
+
+[1] Symbolic state
+ - Built symbolic state: state_tabletop_001
+ - Objects: 3
+ - Relations: 10
+ - Predicates: 29
+ - Validation passed: True
+Task facts: ['grip_force_high', 'material_glass', 'object_cup', 'object_detected', 'object_fragile', 'shape_cylinder']
+
+[2] Concept memory
+Retrieved concepts: ['concept_fragile_object']
+Concept recommendation: use_low_force_strategy
+
+[3] Sparse rule reasoning
+Answer: action_unsafe
+Correct: True
+Active rules: 1/8
+
+[4] Rule induction
+Detected patterns: 5
+Generated rules: 5
+Applied induced rule recommendation: avoid_high_force_grasp
+
+Final integrated trace
+ - Built symbolic state: state_tabletop_001
+ - Objects: 3
+ - Relations: 10
+ - Predicates: 29
+ - Validation passed: True
+ - Mapped symbolic predicates to task facts: ['grip_force_high', 'material_glass', 'object_cup', 'object_detected', 'object_fragile', 'shape_cylinder']
+ - Retrieved concepts: ['concept_fragile_object']
+ - Concept recommendation: use_low_force_strategy
+ - Sparse reasoning answer: action_unsafe
+ - Sparse reasoning correct: True
+ - Induced rule recommendation: avoid_high_force_grasp
